@@ -1,4 +1,6 @@
+#define _GNU_SOURCE
 #include <android/log.h>
+#include <android/native_activity.h>
 #include <android_native_app_glue.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
@@ -88,7 +90,7 @@ static void gfx_draw(void){
 }
 static void gfx_term(void){if(g.display!=EGL_NO_DISPLAY){eglMakeCurrent(g.display,EGL_NO_SURFACE,EGL_NO_SURFACE,EGL_NO_CONTEXT);if(g.context!=EGL_NO_CONTEXT)eglDestroyContext(g.display,g.context);if(g.surface!=EGL_NO_SURFACE)eglDestroySurface(g.display,g.surface);eglTerminate(g.display);}g.display=EGL_NO_DISPLAY;g.surface=EGL_NO_SURFACE;g.context=EGL_NO_CONTEXT;}
 static int32_t input(struct android_app *app,AInputEvent *e){
- (void)app;if(AInputEvent_getType(e)!=AINPUT_EVENT_TYPE_KEY||AKeyEvent_getAction(e)!=AKEY_EVENT_ACTION_DOWN)return 0;
+ (void)app;if(AInputEvent_getType(e)==AINPUT_EVENT_TYPE_MOTION){ if(AMotionEvent_getAction(e)==AMOTION_EVENT_ACTION_DOWN){ ANativeActivity_showSoftInput(app->activity, ANATIVEACTIVITY_SHOW_SOFT_INPUT_IMPLICIT); return 1; } return 1; }\n if(AInputEvent_getType(e)!=AINPUT_EVENT_TYPE_KEY||AKeyEvent_getAction(e)!=AKEY_EVENT_ACTION_DOWN)return 0;
  int k=AKeyEvent_getKeyCode(e),m=AKeyEvent_getMetaState(e);char out[2];size_t n=0;
  if(k==AKEYCODE_ENTER){out[0]='\n';n=1;}
  else if(k==AKEYCODE_DEL){out[0]=0x7f;n=1;}
