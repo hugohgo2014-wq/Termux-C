@@ -105,7 +105,7 @@ void android_main(struct android_app *app){
  app_dummy();memset(screen,' ',sizeof(screen));term_write("NEBULA TERMINAL / native C + OpenGL ES 3.0\nAndroid system shell (app sandbox)\n");
  app->onAppCmd=cmd;app->onInputEvent=input;pty_start();
  while(!app->destroyRequested){int events;struct android_poll_source *source=NULL;int timeout=pty>=0?40:-1;int ident=ALooper_pollOnce(timeout,NULL,&events,(void**)&source);
-  if(ident==ALOOPER_POLL_ERROR)break;if(source)source->process(app);
+  if(ident==ALOOPER_POLL_ERROR)break;if(source)source->process(app, source);
   if(pty>=0){pty_read();int status;if(child>0&&waitpid(child,&status,WNOHANG)==child){child=-1;term_write("\n[shell exited]\n");close(pty);pty=-1;}}
   gfx_draw();
  }
