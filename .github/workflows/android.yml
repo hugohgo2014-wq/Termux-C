@@ -25,12 +25,17 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # setup-android@v3 defaults to "tools platform-tools".
+      # Google removed the legacy "tools" package; requesting it makes
+      # sdkmanager exit 1 before the build starts. Install only platform-tools.
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
 
       - name: Install Android build components
         run: |
-          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
