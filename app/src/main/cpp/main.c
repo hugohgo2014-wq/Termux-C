@@ -119,7 +119,7 @@ void android_main(struct android_app *app) {
     while (true) {
         int events;
         struct android_poll_source *source = NULL;
-        int ident = ALooper_pollOnce(g.display == EGL_NO_DISPLAY ? -1 : 0,
+        int ident = ALooper_pollOnce(-1,
                                      NULL, &events, (void **)&source);
         if (ident == ALOOPER_POLL_ERROR) break;
         if (source) source->process(app, source);
