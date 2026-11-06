@@ -90,7 +90,8 @@ static void gfx_draw(void){
 }
 static void gfx_term(void){if(g.display!=EGL_NO_DISPLAY){eglMakeCurrent(g.display,EGL_NO_SURFACE,EGL_NO_SURFACE,EGL_NO_CONTEXT);if(g.context!=EGL_NO_CONTEXT)eglDestroyContext(g.display,g.context);if(g.surface!=EGL_NO_SURFACE)eglDestroySurface(g.display,g.surface);eglTerminate(g.display);}g.display=EGL_NO_DISPLAY;g.surface=EGL_NO_SURFACE;g.context=EGL_NO_CONTEXT;}
 static int32_t input(struct android_app *app,AInputEvent *e){
- (void)app;if(AInputEvent_getType(e)==AINPUT_EVENT_TYPE_MOTION){ if(AMotionEvent_getAction(e)==AMOTION_EVENT_ACTION_DOWN){ ANativeActivity_showSoftInput(app->activity, ANATIVEACTIVITY_SHOW_SOFT_INPUT_IMPLICIT); return 1; } return 1; }\n if(AInputEvent_getType(e)!=AINPUT_EVENT_TYPE_KEY||AKeyEvent_getAction(e)!=AKEY_EVENT_ACTION_DOWN)return 0;
+ (void)app;if(AInputEvent_getType(e)==AINPUT_EVENT_TYPE_MOTION){ if(AMotionEvent_getAction(e)==AMOTION_EVENT_ACTION_DOWN){ ANativeActivity_showSoftInput(app->activity, ANATIVEACTIVITY_SHOW_SOFT_INPUT_IMPLICIT); return 1; } return 1; }
+ if(AInputEvent_getType(e)!=AINPUT_EVENT_TYPE_KEY||AKeyEvent_getAction(e)!=AKEY_EVENT_ACTION_DOWN)return 0;
  int k=AKeyEvent_getKeyCode(e),m=AKeyEvent_getMetaState(e);char out[2];size_t n=0;
  if(k==AKEYCODE_ENTER){out[0]='\n';n=1;}
  else if(k==AKEYCODE_DEL){out[0]=0x7f;n=1;}
@@ -102,7 +103,7 @@ static int32_t input(struct android_app *app,AInputEvent *e){
 }
 static void cmd(struct android_app *app,int32_t c){switch(c){case APP_CMD_INIT_WINDOW:if(app->window&&gfx_init(app->window))gfx_draw();break;case APP_CMD_TERM_WINDOW:gfx_term();break;case APP_CMD_WINDOW_RESIZED:if(g.display!=EGL_NO_DISPLAY){eglQuerySurface(g.display,g.surface,EGL_WIDTH,&g.w);eglQuerySurface(g.display,g.surface,EGL_HEIGHT,&g.h);gfx_draw();}break;default:break;}}
 void android_main(struct android_app *app){
- app_dummy();memset(screen,' ',sizeof(screen));term_write("NEBULA TERMINAL / native C + OpenGL ES 3.0\nAndroid system shell (app sandbox)\n");
+ memset(screen,' ',sizeof(screen));term_write("NEBULA TERMINAL / native C + OpenGL ES 3.0\nAndroid system shell (app sandbox)\n");
  app->onAppCmd=cmd;app->onInputEvent=input;pty_start();
  while(!app->destroyRequested){int events;struct android_poll_source *source=NULL;int timeout=pty>=0?40:-1;int ident=ALooper_pollOnce(timeout,NULL,&events,(void**)&source);
   if(ident==ALOOPER_POLL_ERROR)break;if(source)source->process(app, source);
